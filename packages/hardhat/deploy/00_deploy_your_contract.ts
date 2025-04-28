@@ -37,12 +37,24 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   // Get the deployed contract to interact with it after deploying.
   const batchRegistry = await hre.ethers.getContract<Contract>("BatchRegistry", deployer);
+  batchRegistry.transferOwnership("0xd6353Ff442dfa5ecf6dFe33C23f3da65654C0F21");
   console.log("\nBatchRegistry deployed to:", await batchRegistry.getAddress());
   console.log("Remember to update the allow list!\n");
 
   // The GraduationNFT contract is deployed on the BatchRegistry constructor.
   const batchGraduationNFTAddress = await batchRegistry.batchGraduationNFT();
   console.log("BatchGraduation NFT deployed to:", batchGraduationNFTAddress, "\n");
+
+  await deploy("Metadata", {
+    from: deployer,
+    args: ["sircoderin", "3", "4", "5"],
+    log: true,
+    autoMine: true,
+  });
+
+  // Get the deployed contract to interact with it after deploying.
+  const metadata = await hre.ethers.getContract<Contract>("Metadata", deployer);
+  console.log("\nMetadata deployed to:", await metadata.getAddress());
 };
 
 export default deployYourContract;
