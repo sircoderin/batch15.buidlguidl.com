@@ -24,11 +24,12 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   */
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
+  const mainWallet = "0xd6353Ff442dfa5ecf6dFe33C23f3da65654C0F21";
 
   await deploy("BatchRegistry", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer, BATCH_NUMBER],
+    args: [mainWallet, BATCH_NUMBER],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -37,9 +38,20 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   // Get the deployed contract to interact with it after deploying.
   const batchRegistry = await hre.ethers.getContract<Contract>("BatchRegistry", deployer);
-  batchRegistry.transferOwnership("0xd6353Ff442dfa5ecf6dFe33C23f3da65654C0F21");
-  console.log("\nBatchRegistry deployed to:", await batchRegistry.getAddress());
+  const batchRegistryAddress = await batchRegistry.getAddress();
+  console.log("\nBatchRegistry deployed to:", batchRegistryAddress);
   console.log("Remember to update the allow list!\n");
+
+  await deploy("CheckIn", {
+    from: deployer,
+    // args: [mainWallet, "0xa10cD1cCB734f7662b319d26cB57c091A6aF921e"],
+    args: [mainWallet, batchRegistryAddress],
+    log: true,
+    autoMine: true,
+  });
+
+  const checkIn = await hre.ethers.getContract<Contract>("BatchRegistry", deployer);
+  console.log("\nCheckIn deployed to:", await checkIn.getAddress());
 
   // The GraduationNFT contract is deployed on the BatchRegistry constructor.
   const batchGraduationNFTAddress = await batchRegistry.batchGraduationNFT();
@@ -47,7 +59,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   await deploy("Metadata", {
     from: deployer,
-    args: ["sircoderin", "3", "4", "5"],
+    args: ["Sir Coderin", "50", "210", "219"],
     log: true,
     autoMine: true,
   });

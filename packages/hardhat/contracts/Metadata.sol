@@ -8,10 +8,10 @@ interface IGraduateNFTMetadata {
 }
 
 contract Metadata is IGraduateNFTMetadata {
-    string public name;
-    uint8 public red;
-    uint8 public green;
-    uint8 public blue;
+    string private name;
+    uint8 private red;
+    uint8 private green;
+    uint8 private blue;
 
     event MetadataUpdated(string name, uint8 red, uint8 green, uint8 blue);
 
@@ -20,15 +20,6 @@ contract Metadata is IGraduateNFTMetadata {
         red = _red;
         green = _green;
         blue = _blue;
-    }
-
-    function updateMetadata(string memory _name, uint8 _red, uint8 _green, uint8 _blue) public {
-        name = _name;
-        red = _red;
-        green = _green;
-        blue = _blue;
-
-        emit MetadataUpdated(_name, _red, _green, _blue);
     }
 
     function getName() external view override returns (string memory) {

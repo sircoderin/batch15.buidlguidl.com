@@ -68,7 +68,7 @@ contract BatchRegistry is Ownable {
         if (yourContractAddress[tx.origin] == address(0)) {
             checkedInCounter++;
             wasFirstTime = true;
-            (bool success,) = tx.origin.call{value: CHECK_IN_REWARD}("");
+            (bool success, ) = tx.origin.call{ value: CHECK_IN_REWARD }("");
             require(success, "Failed to send check in reward");
         }
 
@@ -87,7 +87,7 @@ contract BatchRegistry is Ownable {
 
     // Withdraw function for admins in case some builders don't end up checking in
     function withdraw() public onlyOwner {
-        (bool success,) = payable(owner()).call{value: address(this).balance}("");
+        (bool success, ) = payable(owner()).call{ value: address(this).balance }("");
         require(success, "Failed to withdraw");
     }
 
